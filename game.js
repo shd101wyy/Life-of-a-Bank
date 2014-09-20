@@ -1,3 +1,14 @@
+
+/*
+ * Init bank name
+ */
+ var bankname = null;
+ do{
+     bankname = prompt("Please enter your bank name", "Capital Two");
+ }
+ while (bankname === null);
+
+alert("your bank is called " + bankname);
 /*
  *   Player?
  *   attributes
@@ -8,10 +19,10 @@ var Player = {
     employees : 0, 
     branches : 1,
     progress : 0,
-    bankName : 
+    bankName : bankname
 }
 
-var branchList = [Branch()];
+//var branchList = [Branch()];
 
 //console.log(Player.money);
 

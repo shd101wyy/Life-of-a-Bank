@@ -33,9 +33,11 @@
  function click_invest(){
   alert("You touched me");
  }
+
  
  var branch_label;    // branch
- 
+
+ var adverting_icon;
  var adverting_label; // advertising
 
  var settings_label;  // settings 
@@ -48,7 +50,7 @@
      enchant();
      game = new Game(game_width, game_height);
      game.preload("assets/investment.png", 'assets/money.png', 'assets/fame.png', 'assets/branches_num.png', 
-                  'assets/employee.png');  // load pictures.
+                  'assets/employee.png', 'assets/advertising.png');  // load pictures.
      game.onload = function(){   // when the game is loaded
          /*
           *  set up home menu scene
@@ -112,6 +114,11 @@
          branch_label.y = game_height - 60;
          branch_label.font = "30px myFirstFont";
          
+         adverting_icon = new Sprite(128, 128);
+         adverting_icon.x = 50;
+         adverting_icon.y = game_height - 180;
+         adverting_icon.image = game.assets['assets/advertising.png'];
+         
          adverting_label = new Label("Advert. ");
          adverting_label.x = 50 + 128 * 2;
          adverting_label.y = game_height - 60;
@@ -138,6 +145,7 @@
          Home_Menu_Scene.addChild(invest_icon);
          Home_Menu_Scene.addChild(invest_label);
          Home_Menu_Scene.addChild(branch_label);
+         Home_Menu_Scene.addChild(adverting_icon);
          Home_Menu_Scene.addChild(adverting_label);
          Home_Menu_Scene.addChild(settings_label);
          Home_Menu_Scene.addChild(bank_name);
