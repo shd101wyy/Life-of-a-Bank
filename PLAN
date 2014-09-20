@@ -1,7 +1,7 @@
 -----@PARAM
 money
 fame - increases customers
-branches - increases employee limit + 2fame
+branches - increases employee limit + 5fame
 employees- affect banks they are hired in, stars increase profit and cost
     - sales - increase customers
     - security guard - prevent robbing (depends on event implementation)
@@ -11,7 +11,7 @@ customers - increase profit + 1fame
 investment - done
 Advertising - increases customers at all banks + 3fame
 
-PROGRESS - 2*fame + 10*branches + employees
+PROGRESS - 2*famelevel + 10*branches + employees
 
 income = sum(branchincome) + investment
 branchincome = branchmult*teller*incomemult*customers

@@ -1,20 +1,20 @@
 function Branch () {
     
-    var AVERAGE_CUSTOMERS = 100;
+    var AVERAGE_CUSTOMERS = [100, 200, 300];
     var CUSTOMERS_VARIANCE = 0.3;
     var GROWTH_RATE_DIVISOR = 10;
-    var INCOME_MULTIPLIER = 500;
+    var INCOME_MULTIPLIER = [500, 1000, 1500];
     var INCOME_VARIANCE = 0.1;
-    var EXPENDITURE_MULTIPLIER = 500;
-    var EXPENDITURE_VARIANCE = 0.1
-    var MAX_EMPLOYEES = 10;
+    var EXPENDITURE_MULTIPLIER = [500, 1000, 1500];
+    var EXPENDITURE_VARIANCE = 0.1;
+    var MAX_EMPLOYEES = [10, 15, 20];
     
     var SALES_EMPLOYEE_DIVISOR = 10;
     var TELLER_EMPLOYEE_DIVISOR = 10;
     
     //Bank level related
-    var BANK_LEVEL = 0;
-    var bankRunCost = [200, 400, 800];
+    this.branchLevel = 0;
+    var branchRunCost = [200, 500, 1250];
     
     var variance = CUSTOMERS_VARIANCE - Math.random() * CUSTOMERS_VARIANCE * 2;
     
@@ -37,7 +37,7 @@ function Branch () {
     this.income;
     
     //expenditure of this branch
-    this.expenditure
+    this.expenditure;
     
     
     function getStarPower (type) {
@@ -70,9 +70,9 @@ function Branch () {
     
     this.updateBranch = function (advertisingMultiplier) {
         
-        var employeeMultiplier = getStarPower("sales") / 10 + 1;
+        var employeeMultiplier = getStarPower("sales") / SALES_EMPLOYEE_DIVISOR + 1;
         
-        this.currentCustomers += this.growthRate * advertisingMultiplier * employeeMultiplier;
+        this.currentCustomers += Math.round(this.growthRate * advertisingMultiplier * employeeMultiplier);
         this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) / GROWTH_RATE_DIVISOR);
     };
     
@@ -84,7 +84,6 @@ function Branch () {
         
         this.employees[this.employeeCount] = employeeToAdd;
         this.employeeCount++;
-        Player.employees++;
     };
     
     this.removeEmployee = function(employeeToRemove){
@@ -99,17 +98,15 @@ function Branch () {
             this.employees.splice(idxToRemove, 1);
             this.employeeCount--;
         }
-        else
-        return
-    }
+    };
     
     this.getIncome = function () {
         var variance = INCOME_VARIANCE - Math.random() * INCOME_VARIANCE * 2;
         var incomeMultiplier = INCOME_MULTIPLIER + variance * INCOME_MULTIPLIER;
         
-        var employeeMultiplier = getStarPower("teller") / 10 + 1;
+        var employeeMultiplier = getStarPower("teller") / TELLER_EMPLOYEE_DIVISOR + 1;
         
-        this.income = this.currentCustomers * incomeMultiplier * employeeMultiplier;
+        this.income = Math.round(this.currentCustomers * incomeMultiplier * employeeMultiplier);
         
         return this.income;
     };
@@ -118,6 +115,6 @@ function Branch () {
         var variance = EXPENDITURE_VARIANCE - Math.random() * EXPENDITURE_VARIANCE * 2;
         var expenditureMultiplier = EXPENDITURE_MULTIPLIER + variance * EXPENDITURE_MULTIPLIER;
         
-        this.expenditure = this.currentCustomers * expenditureMultiplier + getEmployeeSalary();
-    }
+        this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier + getEmployeeSalary() + branchRunCost[this.branchLevel]);
+    };
 }

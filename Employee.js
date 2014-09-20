@@ -4,7 +4,7 @@ function Employee (type, progress) {
     var salaryDefinition = [100, 200, 350, 650, 1300];
     var SALARY_VARIANCE = 0.2;
     var trainingCost = [300, 600, 1300, 3000];
-    var TRAINING_SUCCESS_RATE = 0.95;
+    var TRAINING_SUCCESS_RATE = 0.88;
     
     this.type = "";
     

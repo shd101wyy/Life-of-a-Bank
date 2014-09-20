@@ -53,8 +53,8 @@ function updateInvestments () {
 function getProfit() {
     var totalProfit = 0;
     updateInvestments();
-    updateBranches(/*TODO fill this*/);
+    updateBranches(adve);
     totalProfit = totalProfit + calculateIncome() - calculateExpenditure();
     
-    return
+    return totalProfit;
 }

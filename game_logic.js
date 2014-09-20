@@ -7,21 +7,24 @@
  var game_width = 640;
  var game_height = 960;
  var game; // our game
- var bankname = "Captial Two";
+ var bankname = "Capital Bank";
 
  var CURRENT_SCENE;   // save current scene
  var LAST_SCENE   ;   // save last scene
  var drawHomeMenuScene;
  var drawBranchesScene;
+ var drawBranchInformation;
+ var drawSpecificBranchInformation;
  var drawInvestmentScene;
  var drawAdvertisingScene;
-
+ var SAVED_BRANCHES_SCENE; // for saving branches scene
+ var drawAdvertisement;
  // scenes
  var Home_Menu_Scene; // home menu scene
  var Advertising_Scene;
  var Branches_Scene;
  var Investment_Scene;
-
+ var Branch_Information_Scene;
  
  /*
   *    home menu scene
@@ -137,6 +140,12 @@
          settings_label.y = game_height - 60;
          settings_label.font = "30px myFirstFont";
          
+         var clickSettings = function(){
+          alert("Game Made by Kanzy, Christian, Yiyi");
+         }
+         settings_icon.addEventListener("touchstart", clickSettings);
+         settings_label.addEventListener("touchstart", clickSettings);
+         
          var bank_name = new Label(bankname == null?"✮Bank" : ("✮" + bankname)); // code here has problem, if name of bank is too long, they overlap..
          bank_name.x = 100;
          bank_name.y = 40;
@@ -166,11 +175,105 @@
          game.pushScene(Home_Menu_Scene); // add to game
 }
  
+  /*
+  draw information of each branch
+  show employee information
+  */
+ drawSpecificBranchInformation = function(branch_object){
+    Branch_Information_Scene = new Scene();
+    Branch_Information_Scene.backgroundColor = "#F5F5F5";
+      
+    var back_icon = new Sprite(128, 128);
+    back_icon.x = 10;
+    back_icon.y = game_height - 180;
+    back_icon.image = game.assets['assets/back.png'];
+    
+    var back_label = new Label("Back");
+    back_label.x = 30;
+    back_label.y = game_height - 60;
+    back_label.font = "30px myFirstFont";
+    
+    var goBack = function(){
+      game.popScene(); // go back to branches_scene;
+      game.pushScene(SAVED_BRANCHES_SCENE); 
+    }
+    back_icon.addEventListener("touchstart", goBack);
+    back_label.addEventListener("touchstart", goBack);
+    
+    var upgrade_label = new Label("Upgrade");
+    upgrade_label.x = 30 + 128;
+    upgrade_label.y = game_height - 60;
+    upgrade_label.font = "30px myFirstFont";
+    
+    var sell_label = new Label("Sell");
+    sell_label.x = 60 + 128 * 2;
+    sell_label.y = game_height - 60;
+    sell_label.font = "30px myFirstFont";
+    
+    var employ_label = new Label("Employ");
+    employ_label.x = 60 + 128 * 3;
+    employ_label.y = game_height - 60;
+    employ_label.font = "30px myFirstFont";
+    
+    
+    Branch_Information_Scene.addChild(back_icon);
+    Branch_Information_Scene.addChild(back_label);
+    Branch_Information_Scene.addChild(upgrade_label);
+    Branch_Information_Scene.addChild(sell_label);
+    Branch_Information_Scene.addChild(employ_label);
+    
+    game.pushScene(Branch_Information_Scene);
+ }
+ 
  /*
   *
   *  Branches Scene
   *
   */
+ drawBranchInformation = function(branch_object, x, y){
+     /*
+      * suppose I have property 
+      * level, employees, customers, income
+      */
+   var level = new Label("Level: 1");
+   level.x = x;
+   level.y = y;
+   level.font = "40px myFirstFont";
+   Branches_Scene.addChild((level));
+   
+   var employees = new Label("#Employees: 5");
+   employees.x = x;
+   employees.y = y + 30;
+   employees.font = "40px myFirstFont";
+   Branches_Scene.addChild((employees));
+   
+   var customers = new Label("#Customers: 0");
+   customers.x = x;
+   customers.y = y + 60;
+   customers.font = "40px myFirstFont";
+   Branches_Scene.addChild((customers));
+   
+   var income = new Label("Income: 100");
+   income.x = x;
+   income.y = y + 90;
+   income.font = "40px myFirstFont";
+   Branches_Scene.addChild(income);
+   
+   /* show specific branch information */
+   var clickBranch = function(){
+     SAVED_BRANCHES_SCENE = Branches_Scene; // save current scene
+     game.removeScene(Branches_Scene);    
+     // game.removeScene(Branches_Scene);
+     drawSpecificBranchInformation(branch_object);
+   }
+   
+   level.addEventListener("touchstart", clickBranch);
+   employees.addEventListener("touchstart", clickBranch);
+   customers.addEventListener("touchstart", clickBranch);
+   income.addEventListener("touchstart", clickBranch);
+   
+ }
+
  drawBranchesScene = function(){
     Branches_Scene = new Scene();
     // but not pushed to game.
@@ -179,6 +282,13 @@
     title.x = 100;
     title.y = 40;
     title.font = "60px myFirstFont";
+    
+    
+    drawBranchInformation({}, 20, 120);
+    drawBranchInformation({}, 20, 270);
+    drawBranchInformation({}, 20, 420);
+    drawBranchInformation({}, 20, 570);
+    
     
     var back_icon = new Sprite(128, 128);
     back_icon.x = 10;
@@ -192,7 +302,7 @@
     
     var backInBranchScene = function(){
      game.removeScene(Branches_Scene); // remove current scene;
-     drawHomeMenuScene();
+     game.pushScene(Home_Menu_Scene); // go back to branches scene
     }
     
     back_icon.addEventListener("touchstart", backInBranchScene);
@@ -218,10 +328,44 @@
     Branches_Scene.addChild(build_branch_label);
     game.pushScene(Branches_Scene);
  }
- 
+ var drawInvestmentInformation = function(investment_obj, x, y){
+  /*
+   * success%, ROI, amount, time
+   */ 
+   
+   var success = new Label("Success%: 1");
+   success.x = x;
+   success.y = y;
+   success.font = "40px myFirstFont";
+   Investment_Scene.addChild((success));
+   
+   var ROI = new Label("ROI: 5");
+   ROI.x = x;
+   ROI.y = y + 30;
+   ROI.font = "40px myFirstFont";
+   Investment_Scene.addChild((ROI));
+   
+   var amount = new Label("Amount: 100");
+   amount.x = x;
+   amount.y = y + 60;
+   amount.font = "40px myFirstFont";
+   Investment_Scene.addChild((amount));
+   
+   var time = new Label("Time: 2 months");
+   time.x = x;
+   time.y = y + 90;
+   time.font = "40px myFirstFont";
+   Investment_Scene.addChild(time);
+ }
  drawInvestmentScene = function(){
   Investment_Scene = new Scene();
   Investment_Scene.backgroundColor = "#F5F5F5";
+  
+  drawInvestmentInformation({}, 20, 120);
+  drawInvestmentInformation({}, 20, 270);
+  drawInvestmentInformation({}, 20, 420);
+  drawInvestmentInformation({}, 20, 570);
+    
   var title = new Label("Investment");
   title.x = 100;
   title.y = 40;
@@ -251,9 +395,35 @@
   game.pushScene(Investment_Scene);
 
  }
+ 
+ drawAdvertisement = function(advertisment_obj, x, y){
+   var cost = new Label("Cost%: 1");
+   cost.x = x;
+   cost.y = y;
+   cost.font = "40px myFirstFont";
+   Advertising_Scene.addChild((cost));
+   
+   var type = new Label("type: TV");
+   type.x = x;
+   type.y = y + 30;
+   type.font = "40px myFirstFont";
+   Advertising_Scene.addChild((type));
+   
+   var buy = new Label("Buy?");
+   buy.x = x;
+   buy.y = y + 60;
+   buy.font = "40px myFirstFont";
+   Advertising_Scene.addChild((buy));
+ }
  drawAdvertisingScene = function(){
   Advertising_Scene = new Scene();
   Advertising_Scene.backgroundColor = "#F5F5F5";
+  
+  drawAdvertisement({}, 20, 120);
+  drawAdvertisement({}, 20, 270);
+  drawAdvertisement({}, 20, 420);
+  drawAdvertisement({}, 20, 570);
+  
   var title = new Label("Advertising");
   title.x = 100;
   title.y = 40;

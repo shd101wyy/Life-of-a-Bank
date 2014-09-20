@@ -12,13 +12,13 @@ function Investment (progress){
     
     this.roi = 1 / this.risk;
     
-    this.length = (this.roi * LENGTH_MULTIPLIER).toFixed(0);
+    this.length = Math.round((this.roi * LENGTH_MULTIPLIER));
     
-    this.amount = Player.progress * AMOUNT_MULTIPLIER;
+    this.amount = progress * AMOUNT_MULTIPLIER;
     
     this.updateInvestment = function() {
         this.length -= 1;
-    }
+    };
     
     this.getIncome = function () {
         //check if investment has matured
@@ -30,11 +30,11 @@ function Investment (progress){
             }
             else {
                 //investment failed
-                return this.amount - (this.roi - 1) * this.amount;
+                return this.amount - (this.roi - 0.8) * this.amount;
             }
         }
         else {
             return 0;
         }
-    }
+    };
 }
