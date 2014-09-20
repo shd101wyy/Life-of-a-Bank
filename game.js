@@ -1,40 +1,17 @@
-
-/*
- * Init bank name
+/**
+ * Constants for fame calculation
  */
- var bankname = null;
- do{
-     bankname = prompt("Please enter your bank name", "Capital Bank");
-//   if(!confirm("Are you sure you want your bank name to be " + bankname + "?")){
-//         bankname = null;
-//     }
- }
- while (bankname === null);
+var FAME_LEVELS = [0, 40];
+var FAME_BRANCH_MULTIPLIER = 5;
+var FAME_CUSTOMERS_MULTIPLIER = 1;
+var FAME_ADVERTISING_MULTIPLIER = 1;
 
-//alert("Your bank is called " + bankname);
-/*
- *   Player?
- *   attributes
+/**
+ * Constants for progress calculation
  */
-var Player = {
-    money : 1000, 
-    fame : 0,
-    fameAdvertisingExp : 0,
-    employees : 0, 
-    branches : 1,
-    progress : 0,
-    bankName : bankname,
-    month : 1,
-    negativeMonths : 0
-}
-
-var investments = [];
-var investmentsAvailable = [];
-var advertisingPower = 0;
-var advertisementsAvailable = [];
-var branchList = [Branch()];
-
-var FAME_LEVELS = [0, 10]
+var PROGRESS_FAME_MULTIPLIER = 10;
+var PROGRESS_BRANCH_MULTIPLIER = 10;
+var PROGRESS_EMPLOYEE_MULTIPLIER = 1;
 
 //console.log(Player.money);
 
@@ -45,16 +22,10 @@ var FAME_LEVELS = [0, 10]
  *   advertise
  */
 
-
-function addBranch() {
-    var newBranch = Branch();
-    branchList[branchList.length] = newBranch;
-}
-
 /**
- * initialize the FAME_LEVELS array
- * run at the start of the game, during initialization
+ * Initialization functions
  */
+
 function initializeFameLevels () {
     var LEVEL_MULTIPLIER = 1.3;
     var MAX_LEVEL = 20;
@@ -63,25 +34,53 @@ function initializeFameLevels () {
         FAME_LEVELS[i] = Math.round(FAME_LEVELS[i-1] * LEVEL_MULTIPLIER);
     }
 }
+function initializeBranchList () {
+    branchList[0] = Branch();
+}
+function init () {
+    initializeFameLevels();
+    initializeBranchList();
+}
 
+/**
+ * Branch functions
+ */
+function addBranch() {
+    var newBranch = Branch();
+    branchList[branchList.length] = newBranch;
+    Player.branches++;
+}
+
+/**
+ * Investment functions
+ */
+
+
+/**
+ * Advertisement functions
+ */
+function buyAdvertisement (advertisementToAdd) {
+    
+}
+
+/**
+ * Next month functions
+ */
 //calculate and updates Player's fame
 function calculateFame () {
-    var BRANCH_MULTIPLIER = 5;
-    var CUSTOMERS_MULTIPLIER = 1;
-    
     var currentFameLevel = 0;
-    
     
     //calculate fame exp
     var fameExp = 0;
     //add customers' value to fameExp
     for (var i = 0; i < branchList.length; i++) {
         var tempBranch = branchList[i];
-        currentFameLevel += tempBranch.currentCustomers * CUSTOMERS_MULTIPLIER;
+        currentFameLevel += tempBranch.currentCustomers * FAME_CUSTOMERS_MULTIPLIER;
     }
-    fameExp += branchList.length * BRANCH_MULTIPLIER;
-    fameExp += Player.fameAdvertisingExp;
+    fameExp += branchList.length * FAME_BRANCH_MULTIPLIER;
+    fameExp += Player.fameAdvertisingExp * FAME_ADVERTISING_MULTIPLIER;
     
+    //determine which fame level 
     for (var i = 0; i < FAME_LEVELS.length; i++) {
         if (fameExp > FAME_LEVELS[i]) {
             currentFameLevel = i;
@@ -89,6 +88,21 @@ function calculateFame () {
     }
     
     Player.fame = currentFameLevel;
+}
+
+//calculate and updates Player's progress
+function calculateProgress () {
+    var progress = 0;
+    
+    for (var i = 0; i < branchList.length; i++) {
+        var tempBranch = branchList[i];
+        progress += tempBranch.employeeCount * PROGRESS_EMPLOYEE_MULTIPLIER;
+    }
+    
+    progress += branchList.length * PROGRESS_BRANCH_MULTIPLIER;
+    progress += Player.fame * PROGRESS_FAME_MULTIPLIER;
+    
+    Player.progress = progress;
 }
 
 //update the branches' stats. should be called before calculateIncome()
@@ -101,8 +115,8 @@ function updateBranches (advertisingMultiplier) {
 
 //update the investments. should be called before calculateIncome()
 function updateInvestments () {
-     for (var i = 0; i < investments.length; i++) {
-          var tempInvestment = investments[i];
+     for (var i = 0; i < investmentsBought.length; i++) {
+          var tempInvestment = investmentsBought[i];
           tempInvestment.updateInvestment();
      }
 }
@@ -110,10 +124,10 @@ function updateInvestments () {
 //delete completed investments. should be called after calculateIncome()
 function deleteInvestments () {
     var i = 0;
-    while (i < investments.length) {
-        var tempInvestment = investments[i];
+    while (i < investmentsBought.length) {
+        var tempInvestment = investmentsBought[i];
         if (tempInvestment.length === 0) {
-            investments.splice(i, 1);
+            investmentsBought.splice(i, 1);
         }
         else {
             i++;
@@ -128,8 +142,8 @@ function calculateIncome() {
      var branchIncome = 0;
      
      //get income from investment
-     for (var i = 0; i < investments.length; i++) {
-          var tempInvestment = investments[i];
+     for (var i = 0; i < investmentsBought.length; i++) {
+          var tempInvestment = investmentsBought[i];
           investmentIncome += tempInvestment.getIncome();
      }
      
@@ -154,6 +168,39 @@ function calculateExpenditure() {
      }
 }
 
+//generates and returns a new set of investments for the month
+function generateInvestments() {
+    var newInvestments = [];
+    
+    for (var i = 0; i < INVESTMENTS_PER_MONTH; i++) {
+        newInvestments[i] = Investment(Player.progress);
+    }
+    
+    return newInvestments;
+}
+
+//generates and returns a new set of advertisements for the month
+function generateAdvertisements() {
+    var newAdvertisements = [];
+    
+    for (var i = 0; i < ADVERTISEMENTS_PER_MONTH; i++) {
+        newAdvertisements[i] = Advertisement(Player.progress);
+    }
+    
+    return newAdvertisements;
+}
+
+//generate and returns a new set of employees for the month
+function generateEmployees() {
+    for (var i = 0; i < EMPLOYEES_PER_MONTH / 2; i++) {
+        employeesAvailable[i] = Employee("sales", Player.progress);
+    }
+    
+    for (var i = EMPLOYEES_PER_MONTH / 2; i < EMPLOYEES_PER_MONTH; i++) {
+        employeesAvailable[i] = Employee("teller", Player.progress);
+    }
+}
+
 function nextMonth() {
     /**
      * Update branches and investments
@@ -174,6 +221,27 @@ function nextMonth() {
     advertisingPower = 0;
     
     /**
-     * Delete and generate new investmentsAvailable and advertisementsAvailable
+     * Delete and generate new investmentsAvailable, advertisementsAvailable, employeesAvailable
      */
+    investmentsAvailable = generateInvestments();
+    advertisementsAvailable = generateAdvertisements();
+    employeesAvailable = generateEmployees();
+    
+    /**
+     * Update month, fame, progress
+     */
+    Player.month++;
+    calculateFame();
+    calculateProgress();
 }
+
+
+
+
+/**
+ * Actual code to run
+ */
+init();
+advertisementsAvailable = generateAdvertisements();
+investmentsAvailable = generateInvestments();
+employeesAvailable = generateEmployees();

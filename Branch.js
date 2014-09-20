@@ -9,8 +9,8 @@ function Branch () {
     var EXPENDITURE_VARIANCE = 0.1;
     var MAX_EMPLOYEES = [10, 15, 20];
     
-    var SALES_EMPLOYEE_DIVISOR = 10;
-    var TELLER_EMPLOYEE_DIVISOR = 10;
+    var SALES_EMPLOYEE_DIVISOR = 100;
+    var TELLER_EMPLOYEE_DIVISOR = 100;
     
     //Bank level related
     this.branchLevel = 0;
@@ -84,6 +84,8 @@ function Branch () {
         
         this.employees[this.employeeCount] = employeeToAdd;
         this.employeeCount++;
+        
+        Player.employees++;
     };
     
     this.removeEmployee = function(employeeToRemove){
@@ -116,5 +118,18 @@ function Branch () {
         var expenditureMultiplier = EXPENDITURE_MULTIPLIER + variance * EXPENDITURE_MULTIPLIER;
         
         this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier + getEmployeeSalary() + branchRunCost[this.branchLevel]);
+    };
+    
+    this.clickDelete = function () {
+        var indexToDelete;
+    
+        for (var i = 0; i < branchList.length; i++) {
+            var tempBranch = branchList[i];
+            if (tempBranch === this) {
+                indexToDelete = i;
+            }
+        }
+        
+        branchList.splice(indexToDelete, 1);
     };
 }

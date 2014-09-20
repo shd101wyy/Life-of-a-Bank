@@ -37,4 +37,18 @@ function Investment (progress){
             return 0;
         }
     };
+    
+    this.clickBuy = function(){
+        investmentsBought[investmentsBought.length] = this;
+        Player.money -= this.amount;
+        
+        for (var i = 0; i < investmentsAvailable; i++) {
+            var indexToDelete;
+            if (this === investmentsAvailable[i]) {
+                indexToDelete = i;
+            }
+        }
+        
+        investmentsAvailable.splice(indexToDelete, 1);
+    };
 }
