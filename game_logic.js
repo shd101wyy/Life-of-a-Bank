@@ -34,11 +34,11 @@
   alert("You touched me");
  }
 
- 
+ var branch_icon;  
  var branch_label;    // branch
-
- var adverting_icon;
- var adverting_label; // advertising
+ 
+ var advertising_icon;
+ var advertising_label; // advertising
 
  var settings_label;  // settings 
  
@@ -50,7 +50,7 @@
      enchant();
      game = new Game(game_width, game_height);
      game.preload("assets/investment.png", 'assets/money.png', 'assets/fame.png', 'assets/branches_num.png', 
-                  'assets/employee.png', 'assets/advertising.png');  // load pictures.
+                  'assets/employee.png', 'assets/ad.png', 'assets/branches.png');  // load pictures.
      game.onload = function(){   // when the game is loaded
          /*
           *  set up home menu scene
@@ -109,20 +109,25 @@
          invest_icon.addEventListener("touchstart", click_invest);
          invest_label.addEventListener("touchstart", click_invest);
          
+         branch_icon = new Sprite(128, 128);
+         branch_icon.x = 50 + 128;
+         branch_icon.y = game_height - 180;
+         branch_icon.image = game.assets['assets/branches.png'];
+         
          branch_label = new Label("Branch");
          branch_label.x = 128+50;
          branch_label.y = game_height - 60;
          branch_label.font = "30px myFirstFont";
          
-         adverting_icon = new Sprite(128, 128);
-         adverting_icon.x = 50;
-         adverting_icon.y = game_height - 180;
-         adverting_icon.image = game.assets['assets/advertising.png'];
+         advertising_icon = new Sprite(128, 128);
+         advertising_icon.x = 50 + 128 * 2;
+         advertising_icon.y = game_height - 180;
+         advertising_icon.image = game.assets['assets/ad.png'];
          
-         adverting_label = new Label("Advert. ");
-         adverting_label.x = 50 + 128 * 2;
-         adverting_label.y = game_height - 60;
-         adverting_label.font = "30px myFirstFont";
+         advertising_label = new Label("Advert. ");
+         advertising_label.x = 50 + 128 * 2;
+         advertising_label.y = game_height - 60;
+         advertising_label.font = "30px myFirstFont";
          
          settings_label = new Label("Settings");
          settings_label.x = 50 + 128 * 3;
@@ -144,9 +149,10 @@
          Home_Menu_Scene.addChild(employees_num_label);
          Home_Menu_Scene.addChild(invest_icon);
          Home_Menu_Scene.addChild(invest_label);
+         Home_Menu_Scene.addChild(branch_icon);
          Home_Menu_Scene.addChild(branch_label);
-         Home_Menu_Scene.addChild(adverting_icon);
-         Home_Menu_Scene.addChild(adverting_label);
+         Home_Menu_Scene.addChild(advertising_icon);
+         Home_Menu_Scene.addChild(advertising_label);
          Home_Menu_Scene.addChild(settings_label);
          Home_Menu_Scene.addChild(bank_name);
 
