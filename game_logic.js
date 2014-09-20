@@ -19,6 +19,7 @@
  var drawAdvertisingScene;
  var SAVED_BRANCHES_SCENE; // for saving branches scene
  var drawAdvertisement;
+ var drawEmployee;
  // scenes
  var Home_Menu_Scene; // home menu scene
  var Advertising_Scene;
@@ -66,32 +67,32 @@
          
          var fame_icon = new Sprite(128, 128);
          fame_icon.image = game.assets['assets/fame.png'];
-         fame_icon.x = 50;
-         fame_icon.y = 290;
+         fame_icon.x = 60;
+         fame_icon.y = 250;
          
          var fame_label = new Label("" + Player.fame);
          fame_label.x = 320;
-         fame_label.y = 320;
+         fame_label.y = 280;
          fame_label.font = "60px myFirstFont";
          
          var branches_num_icon = new Sprite(128, 128);
          branches_num_icon.image = game.assets['assets/branches_num.png'];
          branches_num_icon.x = 50;
-         branches_num_icon.y = 440;
+         branches_num_icon.y = 360;
          
          var branches_num_label = new Label("" + Player.branches);
          branches_num_label.x = 320;
-         branches_num_label.y = 470;
+         branches_num_label.y = 390;
          branches_num_label.font = "60px myFirstFont";
          
          var employees_num_icon = new Sprite(128, 128);
          employees_num_icon.image = game.assets['assets/employee.png'];
          employees_num_icon.x = 50;
-         employees_num_icon.y = 570;
+         employees_num_icon.y = 470;
          
          var employees_num_label = new Label("" + Player.employees);
          employees_num_label.x = 320;
-         employees_num_label.y = 600;
+         employees_num_label.y = 500;
          employees_num_label.font = "60px myFirstFont";
      
 
@@ -152,6 +153,20 @@
          bank_name.y = 40;
          bank_name.font = "50px myFirstFont";
          
+         var next_month_button = new Sprite(128, 128);
+         next_month_button.image = game.assets['assets/next_month.png'];
+         next_month_button.x = 450;
+         next_month_button.y = 620;
+         next_month_button.addEventListener('touchstart', function(){
+           nextMonth();
+           drawHomeMenuScene();
+         })
+         
+         var current_month_label = new Label("Now: " + Player.month);
+         current_month_label.x = 60;
+         current_month_label.y = game_height - 300;
+         current_month_label.font = "50px myFirstFont";
+         
    
          Home_Menu_Scene.addChild(money_icon);
          Home_Menu_Scene.addChild(money_label);
@@ -170,10 +185,30 @@
          Home_Menu_Scene.addChild(settings_icon);
          Home_Menu_Scene.addChild(settings_label);
          Home_Menu_Scene.addChild(bank_name);
+         Home_Menu_Scene.addChild(next_month_button);
+         Home_Menu_Scene.addChild(current_month_label);
 
          Home_Menu_Scene.backgroundColor = "#F5F5F5";
          
          game.pushScene(Home_Menu_Scene); // add to game
+}
+
+drawEmployee = function(employee_object, x, y){
+    var level = new Label("Level: 1" /*+ (employee_object.branchLevel + 1)*/);
+    level.x = 60;
+    level.y = 60;
+    level.font = "40px myFirstFont";
+    Branch_Information_Scene.addChild((level));
+    
+    var salary = new Label("Salary: 100");
+    salary.x = 60;
+    salary.y = 180;
+    Branch_Information_Scene.addChild(salary);
+    
+    var employee_picture = new Sprite(128, 128);
+    
+ 
+ 
 }
  
   /*
@@ -232,7 +267,7 @@
     employ_label.font = "30px myFirstFont";
     
     /* Branch Information */
-    var level = new Label("Level: " + branch_object.branchLevel);
+    var level = new Label("Level: " + (branch_object.branchLevel + 1));
     level.x = 60;
     level.y = 60;
     level.font = "40px myFirstFont";
@@ -250,7 +285,7 @@
     customers.font = "40px myFirstFont";
     Branches_Scene.addChild((customers));
     
-    var income = new Label("Income: " + branch_object.income);
+    var income = new Label("Profit: " + (branch_object.income - branch_object.expenditure));
     income.x = 60;
     income.y = 60 + 90;
     income.font = "40px myFirstFont";
@@ -290,9 +325,9 @@
     else{
      branch_picture.image = game.assets['assets/level3_branch.png'];
     }
-    branch_picture.x = 500;
-    branch_picture.y = y;
-    Branches_Scene.addChild(branch_picture);
+    branch_picture.x = 400;
+    branch_picture.y = 30;
+    Branch_Information_Scene.addChild(branch_picture);
     
     
     Branch_Information_Scene.addChild(back_icon);
@@ -364,6 +399,7 @@
    
    // draw branch scene
    var branch_picture = new Sprite(128, 128);
+   branch_picture.addEventListener("touchstart", clickBranch);
    if(branch_object.branchLevel == 0){
     branch_picture.image = game.assets['assets/level1_branch.png'];
    }
@@ -630,7 +666,7 @@
                   'assets/sell.png' , 'assets/employ.png', 'assets/invest_button.png',
                   'assets/up_button.png', 'assets/down_button.png', 'assets/level1_branch.png',
                   'assets/level2_branch.png', 'assets/level3_branch.png', 'assets/tellers.png',
-                  'assets/sales.png', 'assets/security_guard.png');  // load pictures.
+                  'assets/sales.png', 'assets/security_guard.png', 'assets/next_month.png');  // load pictures.
      game.onload = function(){   // when the game is loaded
          drawHomeMenuScene();
      }

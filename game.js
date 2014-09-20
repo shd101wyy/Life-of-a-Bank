@@ -40,11 +40,13 @@ function initializeBranchList () {
 function init () {
     initializeFameLevels();
     initializeBranchList();
+    
+    calculateFame();
     calculateProgress();
+    
     advertisementsAvailable = generateAdvertisements();
     investmentsAvailable = generateInvestments();
     employeesAvailable = generateEmployees();
-    calculateFame();
 }
 
 /**
@@ -197,13 +199,17 @@ function generateAdvertisements() {
 
 //generate and returns a new set of employees for the month
 function generateEmployees() {
+    var newEmployees = [];
+    
     for (var i = 0; i < EMPLOYEES_PER_MONTH / 2; i++) {
-        employeesAvailable[i] = new Employee("sales", Player.progress);
+        newEmployees[i] = new Employee("sales", Player.progress);
     }
     
     for (var i = EMPLOYEES_PER_MONTH / 2; i < EMPLOYEES_PER_MONTH; i++) {
-        employeesAvailable[i] = new Employee("teller", Player.progress);
+        newEmployees[i] = new Employee("teller", Player.progress);
     }
+    
+    return newEmployees;
 }
 
 function nextMonth() {
@@ -216,6 +222,7 @@ function nextMonth() {
     /**
      * Update Player.money based on income and expenditure
      */
+     console.log(Player.money);
     Player.money += calculateIncome();
     Player.money -= calculateExpenditure();
     
@@ -233,6 +240,21 @@ function nextMonth() {
     employeesAvailable = generateEmployees();
     
     /**
+     * Check if Player.money is negative
+     */
+    var losingCondition = Player.progress * -200;
+    if (Player.money < losingCondition) {
+        alert(Player.bankName + " is now bankrupt! D:");
+    }
+    else if (Player.money < 0 && Player.money > losingCondition) {
+        Player.negativeMonths++;
+        alert((6 - Player.negativeMonths) + "months till bankruptcy! ):");
+    }
+    else {
+        Player.negativeMonths = 0;
+    }
+    
+    /**
      * Update month, fame, progress
      */
     Player.month++;
@@ -247,6 +269,3 @@ function nextMonth() {
  * Actual code to run
  */
 init();
-
-
-console.log(Player.progress);

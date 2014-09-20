@@ -19,11 +19,11 @@ function Branch () {
     var variance = CUSTOMERS_VARIANCE - Math.random() * CUSTOMERS_VARIANCE * 2;
     
     //maximum number of customers this branch can have
-    this.maxCustomers = AVERAGE_CUSTOMERS + variance * AVERAGE_CUSTOMERS;
-    
+    this.maxCustomers = Math.round(AVERAGE_CUSTOMERS[this.branchLevel] + variance * AVERAGE_CUSTOMERS[this.branchLevel]);
+    console.log(this.maxCustomers);
     //current number of customers
     this.currentCustomers = Math.round(0.05 * this.maxCustomers);
-    
+    console.log(this.currentCustomers);
     //growth rate of currentCustomers. A number > 1
     this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) / GROWTH_RATE_DIVISOR);
     
@@ -34,7 +34,7 @@ function Branch () {
     this.employeeCount = 0;
     
     //income of this branch
-    this.income;
+    this.income = 0;
     
     //expenditure of this branch
     this.expenditure;
@@ -65,7 +65,7 @@ function Branch () {
     }
     
     this.hasSpace = function () {
-        return this.employeeCount < MAX_EMPLOYEES;
+        return this.employeeCount < MAX_EMPLOYEES[this.branchLevel];
     };
     
     this.updateBranch = function (advertisingMultiplier) {
@@ -104,7 +104,7 @@ function Branch () {
     
     this.getIncome = function () {
         var variance = INCOME_VARIANCE - Math.random() * INCOME_VARIANCE * 2;
-        var incomeMultiplier = INCOME_MULTIPLIER + variance * INCOME_MULTIPLIER;
+        var incomeMultiplier = INCOME_MULTIPLIER[this.branchLevel] + variance * INCOME_MULTIPLIER[this.branchLevel];
         
         var employeeMultiplier = getStarPower("teller") / TELLER_EMPLOYEE_DIVISOR + 1;
         
@@ -118,6 +118,8 @@ function Branch () {
         var expenditureMultiplier = EXPENDITURE_MULTIPLIER + variance * EXPENDITURE_MULTIPLIER;
         
         this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier + getEmployeeSalary() + branchRunCost[this.branchLevel]);
+        
+        return this.expenditure
     };
     
     this.clickDelete = function () {
