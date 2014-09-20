@@ -1,0 +1,49 @@
+@font-face{
+	    font-family: myFirstFont;
+	    src: url(visitor1.ttf);
+}
+         
+html, body{
+	font-family: myFirstFont;
+    /*background: rgb(245, 245, 245);
+    height: 100%;
+    width: 100%;*/
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+div {
+    font-family: myFirstFont;
+}
+
+.our_button {
+    width : 50% ;
+    height : 20% ;
+    left : 25%;
+    
+	-moz-box-shadow: 0px 10px 14px -7px #276873;
+	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+	box-shadow: 0px 10px 14px -7px #276873;
+	background-color:#599bb3;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	display:inline-block;
+	color:#ffffff;
+	font-family:arial;
+	font-size:20px;
+	font-weight:bold;
+	/*padding:10px 10px;*/
+	text-decoration:none;
+	text-shadow:0px 1px 0px #3d768a;
+}
+.our_button:hover {
+	background-color:#408c99;
+}
+
+.our_button:active {
+	position:relative;
+	top:1px;
+}
+

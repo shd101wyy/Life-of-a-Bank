@@ -1,0 +1,34 @@
+-----@PARAM
+money
+fame - increases customers
+branches - done - increases employee limit + 2*fame
+employees- affect banks they are hired in, stars increase profit and cost
+    - sales - increase customers
+    - security guard - prevent robbing (depends on event implementation)
+    - tellers - increases income
+    
+customers - increase profit + fame
+investment - done
+Advertising - increases customers at all banks + 3*fame
+
+PROGRESS - 2*fame + 10*branches + employees
+
+income - sum(branchincome) + investment
+branchincome - branchmult*growth*advertise*customers + branchmult*teller*income*customers
+expenditure - branchexpend + Advertising
+
+
+-----Less IMpt
+competitors
+loans
+R&D
+credit rating
+employee training - increases stars
+events
+    thief => safe guard
+    // sue   => lawyer
+branch types
+branch levels
+    - each level can hold different num of employees.
+time limit
+map
