@@ -4,7 +4,7 @@
 function Investment (progress){
     //TODO high risk vs low risk
     
-    var AMOUNT_MULTIPLIER = 1000;
+    var AMOUNT_MULTIPLIER = 100;
     var LENGTH_MULTIPLIER = 7;
     
     //a number between 0.5 and 1. the chance of success of the investment
@@ -16,9 +16,11 @@ function Investment (progress){
     
     this.amount = Player.progress * AMOUNT_MULTIPLIER;
     
-    function updateInvestment () {
+    this.updateInvestment = function() {
         this.length -= 1;
-        
+    }
+    
+    this.getIncome = function () {
         //check if investment has matured
         if (this.length === 0) {
             //check if investment was successful
@@ -30,6 +32,9 @@ function Investment (progress){
                 //investment failed
                 return this.amount - (this.roi - 1) * this.amount;
             }
+        }
+        else {
+            return 0;
         }
     }
 }

@@ -5,10 +5,16 @@ function Branch () {
     var GROWTH_RATE_DIVISOR = 10;
     var INCOME_MULTIPLIER = 500;
     var INCOME_VARIANCE = 0.1;
+    var EXPENDITURE_MULTIPLIER = 500;
+    var EXPENDITURE_VARIANCE = 0.1
     var MAX_EMPLOYEES = 10;
     
     var SALES_EMPLOYEE_DIVISOR = 10;
     var TELLER_EMPLOYEE_DIVISOR = 10;
+    
+    //Bank level related
+    var BANK_LEVEL = 0;
+    var bankRunCost = [200, 400, 800];
     
     var variance = CUSTOMERS_VARIANCE - Math.random() * CUSTOMERS_VARIANCE * 2;
     
@@ -30,6 +36,9 @@ function Branch () {
     //income of this branch
     this.income;
     
+    //expenditure of this branch
+    this.expenditure
+    
     
     function getStarPower (type) {
         
@@ -45,6 +54,16 @@ function Branch () {
         return starPower;
     }
     
+    function getEmployeeSalary(){
+        var salary = 0;
+        
+        for (var i = 0; i < this.employeeCount; i++) {
+        var tempEmployee = this.employees[i];
+            salary += tempEmployee.salary;
+        }
+        return salary;
+    }
+    
     this.hasSpace = function () {
         return this.employeeCount < MAX_EMPLOYEES;
     };
@@ -58,13 +77,14 @@ function Branch () {
     };
     
     this.addEmployee = function (employeeToAdd) {
-        if(!this.hasSpace){
+        if(!this.hasSpace()){
             alert("Branch is full");
             return;
         }
         
         this.employees[this.employeeCount] = employeeToAdd;
         this.employeeCount++;
+        Player.employees++;
     };
     
     this.removeEmployee = function(employeeToRemove){
@@ -72,7 +92,7 @@ function Branch () {
             var idxToRemove = this.employees.length - 1;
             for (var i = 0; i < this.employeeCount; i++) {
                 var tempEmployee = this.employees[i];
-                if (tempEmployee == employeeToRemove) {
+                if (tempEmployee === employeeToRemove) {
                     idxToRemove = i;
                     }
                 }
@@ -95,6 +115,9 @@ function Branch () {
     };
     
     this.getExpenditure = function(){
-        //TODO
+        var variance = EXPENDITURE_VARIANCE - Math.random() * EXPENDITURE_VARIANCE * 2;
+        var expenditureMultiplier = EXPENDITURE_MULTIPLIER + variance * EXPENDITURE_MULTIPLIER;
+        
+        this.expenditure = this.currentCustomers * expenditureMultiplier + getEmployeeSalary();
     }
 }
