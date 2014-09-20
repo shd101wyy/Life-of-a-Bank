@@ -1,3 +1,5 @@
+var MONTHS_OF_BANKRUPTCY_ALLOWED = 6;
+
 /**
  * Constants for fame calculation
  */
@@ -56,6 +58,7 @@ function addBranch() {
     var newBranch = new Branch();
     branchList[branchList.length] = newBranch;
     Player.branches++;
+    Player.money -= newBranch.BRANCH_VALUE[newBranch.branchLevel];
 }
 
 /**
@@ -170,9 +173,11 @@ function calculateExpenditure() {
       
      //getexpenditure from branches
      for (var i = 0; i < branchList.length; i++) {
-          var tempBranch = branchList[i];
-          branchExpenditure += tempBranch.getExpenditure();
+        var tempBranch = branchList[i];
+        branchExpenditure += tempBranch.getExpenditure();
      }
+     
+     return branchExpenditure;
 }
 
 //generates and returns a new set of investments for the month
@@ -222,9 +227,11 @@ function nextMonth() {
     /**
      * Update Player.money based on income and expenditure
      */
-     console.log(Player.money);
+    console.log(Player.money);
     Player.money += calculateIncome();
+    console.log(Player.money);
     Player.money -= calculateExpenditure();
+    console.log(Player.money);
     
     /**
      * Delete completed investments, reset advertisingPower
@@ -242,13 +249,22 @@ function nextMonth() {
     /**
      * Check if Player.money is negative
      */
-    var losingCondition = Player.progress * -200;
+    var losingCondition = -5000;
+    
     if (Player.money < losingCondition) {
-        alert(Player.bankName + " is now bankrupt! D:");
+        alert(Player.bankName + " is now bankrupt! D:\n The game will now reload.");
+        location.reload();
     }
     else if (Player.money < 0 && Player.money > losingCondition) {
         Player.negativeMonths++;
-        alert((6 - Player.negativeMonths) + "months till bankruptcy! ):");
+        
+        if (Player.negativeMonths > MONTHS_OF_BANKRUPTCY_ALLOWED) {
+            alert(Player.bankName + " has gone too many months with negative cash.\n" + Player.bankName + " is now bankrupt! D: \n The game will now reload");
+            location.reload();
+        }
+        else {
+            alert((MONTHS_OF_BANKRUPTCY_ALLOWED - Player.negativeMonths) + " months till bankruptcy! ):");
+        }
     }
     else {
         Player.negativeMonths = 0;

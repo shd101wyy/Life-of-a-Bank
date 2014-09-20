@@ -8,6 +8,8 @@ function Branch () {
     var EXPENDITURE_MULTIPLIER = [500, 1000, 1500];
     var EXPENDITURE_VARIANCE = 0.1;
     var MAX_EMPLOYEES = [10, 15, 20];
+    var BRANCH_VALUE = [1200, 2500, 5500];
+    var SELL_MULTIPLIER = 0.8
     
     var SALES_EMPLOYEE_DIVISOR = 100;
     var TELLER_EMPLOYEE_DIVISOR = 100;
@@ -15,6 +17,7 @@ function Branch () {
     //Bank level related
     this.branchLevel = 0;
     var branchRunCost = [200, 500, 1250];
+    
     
     var variance = CUSTOMERS_VARIANCE - Math.random() * CUSTOMERS_VARIANCE * 2;
     
@@ -115,7 +118,7 @@ function Branch () {
     
     this.getExpenditure = function(){
         var variance = EXPENDITURE_VARIANCE - Math.random() * EXPENDITURE_VARIANCE * 2;
-        var expenditureMultiplier = EXPENDITURE_MULTIPLIER + variance * EXPENDITURE_MULTIPLIER;
+        var expenditureMultiplier = EXPENDITURE_MULTIPLIER[this.branchLevel] + variance * EXPENDITURE_MULTIPLIER[this.branchLevel];
         
         this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier + getEmployeeSalary() + branchRunCost[this.branchLevel]);
         
@@ -123,6 +126,8 @@ function Branch () {
     };
     
     this.clickDelete = function () {
+        
+        
         var indexToDelete;
     
         for (var i = 0; i < branchList.length; i++) {
@@ -131,6 +136,7 @@ function Branch () {
                 indexToDelete = i;
             }
         }
+        Player.money += Math.round(SELL_MULTIPLIER * BRANCH_VALUE[this.branchLevel]);
         
         branchList.splice(indexToDelete, 1);
     };

@@ -5,16 +5,20 @@ function Investment (progress){
     //TODO high risk vs low risk
     
     var AMOUNT_MULTIPLIER = 100;
-    var LENGTH_MULTIPLIER = 7;
+    var LENGTH_MULTIPLIER = 4;
+    var AMOUNT_VARIANCE = 0.3
     
     //a number between 0.5 and 1. the chance of success of the investment
-    this.risk = (Math.random() * 0.5 + 0.5).toFixed(2);
+    this.risk = (Math.random() ).toFixed(2);
     
     this.roi = (1 / this.risk).toFixed(2);
     
     this.length = Math.round((this.roi * LENGTH_MULTIPLIER));
     
+    var variance = AMOUNT_VARIANCE - Math.random() * AMOUNT_VARIANCE * 2
+    
     this.amount = progress * AMOUNT_MULTIPLIER;
+    this.amount = Math.round(this.amount + this.amount * variance);
     
     this.updateInvestment = function() {
         this.length -= 1;

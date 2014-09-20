@@ -196,19 +196,35 @@
 drawEmployee = function(employee_object, x, y){
     var level = new Label("Level: 1" /*+ (employee_object.branchLevel + 1)*/);
     level.x = 60;
-    level.y = 60;
-    level.font = "40px myFirstFont";
-    Branch_Information_Scene.addChild((level));
+    level.y = y + 60;
+    level.font = "30px myFirstFont";
+    Branch_Information_Scene.addChild(level);
     
     var salary = new Label("Salary: 100");
     salary.x = 60;
-    salary.y = 180;
+    salary.y = y + 100;
+    salary.font = "30px myFirstFont";
     Branch_Information_Scene.addChild(salary);
     
     var employee_picture = new Sprite(128, 128);
+    employee_picture.image = game.assets['assets/sales.png'];
+    employee_picture.x = 250;
+    employee_picture.y = y + 50;
+    Branch_Information_Scene.addChild(employee_picture);
     
- 
- 
+    var fire_button = new Sprite(128, 128);
+    fire_button.scale(0.7, 0.7);
+    fire_button.image = game.assets['assets/fire.png'];
+    fire_button.x = 400;
+    fire_button.y = y + 40;
+    Branch_Information_Scene.addChild(fire_button);
+    
+    var train_button = new Sprite(128, 128);
+    train_button.scale(0.7, 0.7);
+    train_button.image = game.assets['assets/train.png'];
+    train_button.x = 500;
+    train_button.y = y + 40;
+    Branch_Information_Scene.addChild(train_button);
 }
  
   /*
@@ -255,6 +271,14 @@ drawEmployee = function(employee_object, x, y){
     sell_label.x = 40 + 128;
     sell_label.y = game_height - 60;
     sell_label.font = "30px myFirstFont";
+    
+    sell_label.addEventListener("touchstart", sellBranch);
+    
+    var sellBranch = function(){ // redraw scene after add branch
+      branch_object.clickDelete;
+      game.popScene();
+      drawBranchesScene()
+    }
     
     var employ_icon = new Sprite(128, 128);
     employ_icon.image = game.assets['assets/employ.png'];
@@ -347,6 +371,12 @@ drawEmployee = function(employee_object, x, y){
     Branch_Information_Scene.addChild(down_button);
     Branch_Information_Scene.addChild(down_label);
     
+    
+    /*
+     *  draw employees
+     */
+    drawEmployee(null, 60, 200);
+    
     game.pushScene(Branch_Information_Scene);
  }
  
@@ -355,7 +385,10 @@ drawEmployee = function(employee_object, x, y){
   *  Branches Scene
   *
   */
- drawBranchInformation = function(branch_object, x, y){
+ drawBranchInformation = function(branch_object, x, y, start_i){
+  if(start_i === null || typeof(start_i) === 'undefined'){
+    start_i = 0;
+  }
      /*
       * suppose I have property 
       * level, employees, customers, income
@@ -378,7 +411,7 @@ drawEmployee = function(employee_object, x, y){
    customers.font = "40px myFirstFont";
    Branches_Scene.addChild((customers));
    
-   var income = new Label("Income: " + branch_object.income);
+   var income = new Label("Income: " + (branch_object.income - branch_object.expenditure));
    income.x = x;
    income.y = y + 90;
    income.font = "40px myFirstFont";
@@ -414,7 +447,11 @@ drawEmployee = function(employee_object, x, y){
    Branches_Scene.addChild(branch_picture);
  }
 
- drawBranchesScene = function(){
+ drawBranchesScene = function(start_i){
+    if(start_i === null || typeof(start_i) === 'undefined'){
+      start_i = 0;
+    }
+      
     Branches_Scene = new Scene();
     // but not pushed to game.
     Branches_Scene.backgroundColor = "#F5F5F5";
@@ -426,10 +463,12 @@ drawEmployee = function(employee_object, x, y){
     var TOP_START = 120;
     var SPACE = 150;
     
-    for (var i = 0; i < branchList.length; i++) {
-        drawBranchInformation(branchList[i], 20, TOP_START + i * SPACE);
+    /* draw 4 branches */
+    for (var i = start_i; i < start_i + 4; i++) {
+        if(i == branchList.length) break;
+        if(branchList[i] === null) continue;
+        drawBranchInformation(branchList[i], 20, TOP_START + (i-start_i) * SPACE);
     }
-    
     
     var back_icon = new Sprite(128, 128);
     back_icon.x = 10;
@@ -446,6 +485,12 @@ drawEmployee = function(employee_object, x, y){
      game.pushScene(Home_Menu_Scene); // go back to branches scene
     }
     
+    var buildBranch = function(){ // redraw scene after add branch
+      addBranch();
+      game.removeScene(Branches_Scene);
+      drawBranchesScene()
+    }
+    
     back_icon.addEventListener("touchstart", backInBranchScene);
     back_label.addEventListener("touchstart", backInBranchScene);
    
@@ -458,8 +503,8 @@ drawEmployee = function(employee_object, x, y){
     build_branch_label.x = 128+50;
     build_branch_label.y = game_height - 60;
     build_branch_label.font = "30px myFirstFont";
-    build_branch_label.addEventListener('touchstart', null); // TODO Build Branches
-    build_branch_label.addEventListener('touchstart', null);
+    build_branch_icon.addEventListener('touchstart', buildBranch); // TODO Build Branches
+    build_branch_label.addEventListener('touchstart', buildBranch);
          
    
     var up_button = new Sprite(128, 128);
@@ -472,6 +517,13 @@ drawEmployee = function(employee_object, x, y){
     up_label.x = 60 + 128 * 2;
     up_label.y = game_height - 60;
     up_label.font = "30px myFirstFont";
+    
+    var click_up_button = function(){
+       game.removeScene(Branches_Scene);
+       drawBranchesScene((start_i - 1) < 0 ? 0 : (start_i - 1));
+    }
+    up_button.addEventListener("touchstart", click_up_button);
+    up_label.addEventListener("touchstart", click_up_button);
 
     
     var down_button = new Sprite(128, 128);
@@ -484,6 +536,13 @@ drawEmployee = function(employee_object, x, y){
     down_label.x = 50 + 128 * 3;
     down_label.y = game_height - 60;
     down_label.font = "30px myFirstFont";
+    
+    var click_down_button = function(){
+       game.removeScene(Branches_Scene);
+       drawBranchesScene((start_i + 1) >= branchList.length ? start_i : (start_i + 1));
+    }
+    down_button.addEventListener("touchstart", click_down_button);
+    down_label.addEventListener("touchstart", click_down_button);
     
     Branches_Scene.addChild(title);
     Branches_Scene.addChild(back_icon);
@@ -666,7 +725,8 @@ drawEmployee = function(employee_object, x, y){
                   'assets/sell.png' , 'assets/employ.png', 'assets/invest_button.png',
                   'assets/up_button.png', 'assets/down_button.png', 'assets/level1_branch.png',
                   'assets/level2_branch.png', 'assets/level3_branch.png', 'assets/tellers.png',
-                  'assets/sales.png', 'assets/security_guard.png', 'assets/next_month.png');  // load pictures.
+                  'assets/sales.png', 'assets/security_guard.png', 'assets/next_month.png',
+                  'assets/train.png', 'assets/fire.png');  // load pictures.
      game.onload = function(){   // when the game is loaded
          drawHomeMenuScene();
      }
