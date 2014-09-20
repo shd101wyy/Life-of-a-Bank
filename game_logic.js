@@ -232,25 +232,25 @@
     employ_label.font = "30px myFirstFont";
     
     /* Branch Information */
-    var level = new Label("Level: 1");
+    var level = new Label("Level: " + branch_object.branchLevel);
     level.x = 60;
     level.y = 60;
     level.font = "40px myFirstFont";
     Branches_Scene.addChild((level));
     
-    var employees = new Label("#Employees: 5");
+    var employees = new Label("#Employees: " + branch_object.employeeCount);
     employees.x = 60;
     employees.y = 60 + 30;
     employees.font = "40px myFirstFont";
     Branches_Scene.addChild((employees));
     
-    var customers = new Label("#Customers: 0");
+    var customers = new Label("#Customers: " + branch_object.currentCustomers);
     customers.x = 60;
     customers.y = 60 + 60;
     customers.font = "40px myFirstFont";
     Branches_Scene.addChild((customers));
     
-    var income = new Label("Income: 100");
+    var income = new Label("Income: " + branch_object.income);
     income.x = 60;
     income.y = 60 + 90;
     income.font = "40px myFirstFont";
@@ -278,6 +278,22 @@
     down_label.x = 530;
     down_label.y = game_height - 60;
     down_label.font = "30px myFirstFont";
+    
+    // draw branch scene
+    var branch_picture = new Sprite(128, 128);
+    if(branch_object.branchLevel == 0){
+     branch_picture.image = game.assets['assets/level1_branch.png'];
+    }
+    else if (branch_object.branchLevel == 1){
+     branch_picture.image = game.assets['assets/level2_branch.png'];
+    }
+    else{
+     branch_picture.image = game.assets['assets/level3_branch.png'];
+    }
+    branch_picture.x = 500;
+    branch_picture.y = y;
+    Branches_Scene.addChild(branch_picture);
+    
     
     Branch_Information_Scene.addChild(back_icon);
     Branch_Information_Scene.addChild(back_label);
@@ -309,25 +325,25 @@
       * suppose I have property 
       * level, employees, customers, income
       */
-   var level = new Label("Level: 1");
+   var level = new Label("Level: " + (branch_object.branchLevel + 1));
    level.x = x;
    level.y = y;
    level.font = "40px myFirstFont";
    Branches_Scene.addChild((level));
    
-   var employees = new Label("#Employees: 5");
+   var employees = new Label("#Employees: " + branch_object.employeeCount);
    employees.x = x;
    employees.y = y + 30;
    employees.font = "40px myFirstFont";
    Branches_Scene.addChild((employees));
    
-   var customers = new Label("#Customers: 0");
+   var customers = new Label("#Customers: " + branch_object.currentCustomers);
    customers.x = x;
    customers.y = y + 60;
    customers.font = "40px myFirstFont";
    Branches_Scene.addChild((customers));
    
-   var income = new Label("Income: 100");
+   var income = new Label("Income: " + branch_object.income);
    income.x = x;
    income.y = y + 90;
    income.font = "40px myFirstFont";
@@ -339,13 +355,27 @@
      game.removeScene(Branches_Scene);    
      // game.removeScene(Branches_Scene);
      drawSpecificBranchInformation(branch_object);
-   }
+   };
    
    level.addEventListener("touchstart", clickBranch);
    employees.addEventListener("touchstart", clickBranch);
    customers.addEventListener("touchstart", clickBranch);
    income.addEventListener("touchstart", clickBranch);
    
+   // draw branch scene
+   var branch_picture = new Sprite(128, 128);
+   if(branch_object.branchLevel == 0){
+    branch_picture.image = game.assets['assets/level1_branch.png'];
+   }
+   else if (branch_object.branchLevel == 1){
+    branch_picture.image = game.assets['assets/level2_branch.png'];
+   }
+   else{
+    branch_picture.image = game.assets['assets/level3_branch.png'];
+   }
+   branch_picture.x = 500;
+   branch_picture.y = y;
+   Branches_Scene.addChild(branch_picture);
  }
 
  drawBranchesScene = function(){
@@ -357,11 +387,12 @@
     title.y = 40;
     title.font = "60px myFirstFont";
     
+    var TOP_START = 120;
+    var SPACE = 150;
     
-    drawBranchInformation({}, 20, 120);
-    drawBranchInformation({}, 20, 270);
-    drawBranchInformation({}, 20, 420);
-    drawBranchInformation({}, 20, 570);
+    for (var i = 0; i < branchList.length; i++) {
+        drawBranchInformation(branchList[i], 20, TOP_START + i * SPACE);
+    }
     
     
     var back_icon = new Sprite(128, 128);
@@ -440,7 +471,7 @@
    success.font = "40px myFirstFont";
    Investment_Scene.addChild((success));
    
-   var ROI = new Label("ROI: " + investment_obj.roi);
+   var ROI = new Label("ROI: " + (investment_obj.roi));
    ROI.x = x;
    ROI.y = y + 30;
    ROI.font = "40px myFirstFont";
@@ -452,7 +483,7 @@
    amount.font = "40px myFirstFont";
    Investment_Scene.addChild((amount));
    
-   var time = new Label("Time: " + investment_obj.length + " month[s]");
+   var time = new Label("Time: " + investment_obj.length + " month(s)");
    time.x = x;
    time.y = y + 90;
    time.font = "40px myFirstFont";
@@ -460,20 +491,29 @@
    
    var invest_button = new Sprite(128, 128);
    invest_button.image = game.assets['assets/invest_button.png'];
-   invest_button.x = x + 400;
+   invest_button.x = x + 440;
    invest_button.y = y;
    Investment_Scene.addChild(invest_button);
+   
+   var click = function(){
+    investment_obj.clickBuy();
+    
+    drawInvestmentScene();       // draw advertising scene again.
+   }
+   
+   invest_button.addEventListener("touchstart", click);
  }
  drawInvestmentScene = function(){
   Investment_Scene = new Scene();
   Investment_Scene.backgroundColor = "#F5F5F5";
   
   
+  var TOP_START = 120;
+  var SPACE = 150;
   
-  drawInvestmentInformation(investmentsAvailable[0], 20, 120);
-  drawInvestmentInformation(investmentsAvailable[1], 20, 270);
-  drawInvestmentInformation(investmentsAvailable[2], 20, 420);
-  drawInvestmentInformation(investmentsAvailable[3], 20, 570);
+  for (var i = 0; i < investmentsAvailable.length; i++) {
+      drawInvestmentInformation(investmentsAvailable[i], 20, TOP_START + SPACE * i);
+  }
     
   var title = new Label("Investment");
   title.x = 100;
@@ -505,14 +545,14 @@
 
  }
  
- drawAdvertisement = function(advertisment_obj, x, y){
-   var cost = new Label("Cost: 1");
+ drawAdvertisement = function(advertisement_obj, x, y){
+   var cost = new Label("Cost: " + advertisement_obj.cost);
    cost.x = x;
    cost.y = y;
    cost.font = "40px myFirstFont";
    Advertising_Scene.addChild((cost));
    
-   var type = new Label("type: TV");
+   var type = new Label("type: " + advertisement_obj.type);
    type.x = x;
    type.y = y + 30;
    type.font = "40px myFirstFont";
@@ -528,15 +568,28 @@
    invest_button.x = x + 400;
    invest_button.y = y;
    Advertising_Scene.addChild((invest_button));
+   
+   var click = function(){
+    advertisement_obj.clickBuy();
+    
+    drawAdvertisingScene();       // draw advertising scene again.
+   }
+   
+   invest_button.addEventListener("touchstart", click);
  }
+ 
+ 
  drawAdvertisingScene = function(){
   Advertising_Scene = new Scene();
   Advertising_Scene.backgroundColor = "#F5F5F5";
-  
-  drawAdvertisement({}, 20, 120);
-  drawAdvertisement({}, 20, 280);
-  drawAdvertisement({}, 20, 440);
-  drawAdvertisement({}, 20, 600);
+
+  // draw advertisments;  
+  var TOP_START = 120;
+  var SPACE = 160;
+  for(var i = 0; i < advertisementsAvailable.length; i++){
+   drawAdvertisement(advertisementsAvailable[i], 20, TOP_START + SPACE * i );
+  }
+
   
   var title = new Label("Advertising");
   title.x = 100;

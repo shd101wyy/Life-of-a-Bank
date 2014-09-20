@@ -10,7 +10,7 @@ function Investment (progress){
     //a number between 0.5 and 1. the chance of success of the investment
     this.risk = (Math.random() * 0.5 + 0.5).toFixed(2);
     
-    this.roi = 1 / this.risk;
+    this.roi = (1 / this.risk).toFixed(2);
     
     this.length = Math.round((this.roi * LENGTH_MULTIPLIER));
     
@@ -42,8 +42,8 @@ function Investment (progress){
         investmentsBought[investmentsBought.length] = this;
         Player.money -= this.amount;
         
+        var indexToDelete;
         for (var i = 0; i < investmentsAvailable; i++) {
-            var indexToDelete;
             if (this === investmentsAvailable[i]) {
                 indexToDelete = i;
             }

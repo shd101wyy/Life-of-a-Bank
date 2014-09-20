@@ -22,7 +22,7 @@ function Branch () {
     this.maxCustomers = AVERAGE_CUSTOMERS + variance * AVERAGE_CUSTOMERS;
     
     //current number of customers
-    this.currentCustomers = 0.05 * this.maxCustomers;
+    this.currentCustomers = Math.round(0.05 * this.maxCustomers);
     
     //growth rate of currentCustomers. A number > 1
     this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) / GROWTH_RATE_DIVISOR);

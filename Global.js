@@ -5,11 +5,11 @@
  
  var bankname = null;
  do{
-     bankname = prompt("Please enter your bank name", "Capital One");
+     bankname = prompt("Please enter your bank name", "CapitalBank");
 //   if(!confirm("Are you sure you want your bank name to be " + bankname + "?")){
 //         bankname = null;
 //     }
-     
+
      if (bankname.length > BANK_NAME_MAX_LENGTH) {
           alert("Name length cannot exceed " + BANK_NAME_MAX_LENGTH);
      }

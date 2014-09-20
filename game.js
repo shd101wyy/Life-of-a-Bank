@@ -35,18 +35,23 @@ function initializeFameLevels () {
     }
 }
 function initializeBranchList () {
-    branchList[0] = Branch();
+    branchList[0] = new Branch();
 }
 function init () {
     initializeFameLevels();
     initializeBranchList();
+    calculateProgress();
+    advertisementsAvailable = generateAdvertisements();
+    investmentsAvailable = generateInvestments();
+    employeesAvailable = generateEmployees();
+    calculateFame();
 }
 
 /**
  * Branch functions
  */
 function addBranch() {
-    var newBranch = Branch();
+    var newBranch = new Branch();
     branchList[branchList.length] = newBranch;
     Player.branches++;
 }
@@ -173,7 +178,7 @@ function generateInvestments() {
     var newInvestments = [];
     
     for (var i = 0; i < INVESTMENTS_PER_MONTH; i++) {
-        newInvestments[i] = Investment(Player.progress);
+        newInvestments[i] = new Investment(Player.progress);
     }
     
     return newInvestments;
@@ -184,7 +189,7 @@ function generateAdvertisements() {
     var newAdvertisements = [];
     
     for (var i = 0; i < ADVERTISEMENTS_PER_MONTH; i++) {
-        newAdvertisements[i] = Advertisement(Player.progress);
+        newAdvertisements[i] = new Advertisement(Player.progress);
     }
     
     return newAdvertisements;
@@ -193,11 +198,11 @@ function generateAdvertisements() {
 //generate and returns a new set of employees for the month
 function generateEmployees() {
     for (var i = 0; i < EMPLOYEES_PER_MONTH / 2; i++) {
-        employeesAvailable[i] = Employee("sales", Player.progress);
+        employeesAvailable[i] = new Employee("sales", Player.progress);
     }
     
     for (var i = EMPLOYEES_PER_MONTH / 2; i < EMPLOYEES_PER_MONTH; i++) {
-        employeesAvailable[i] = Employee("teller", Player.progress);
+        employeesAvailable[i] = new Employee("teller", Player.progress);
     }
 }
 
@@ -242,6 +247,6 @@ function nextMonth() {
  * Actual code to run
  */
 init();
-advertisementsAvailable = generateAdvertisements();
-investmentsAvailable = generateInvestments();
-employeesAvailable = generateEmployees();
+
+
+console.log(Player.progress);
