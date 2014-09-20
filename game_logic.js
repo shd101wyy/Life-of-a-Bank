@@ -20,14 +20,75 @@
  var SAVED_BRANCHES_SCENE; // for saving branches scene
  var drawAdvertisement;
  var drawEmployee;
+ var drawHireInterface;   // two choices
  // scenes
  var Home_Menu_Scene; // home menu scene
  var Advertising_Scene;
  var Branches_Scene;
  var Investment_Scene;
  var Branch_Information_Scene;
+ var Hire_Scene;
  var CURRENT_MONTH = Player.month;
  
+ 
+ drawHireInterface = function(branch_object){
+  Hire_Scene = new Scene();
+  Hire_Scene.backgroundColor = "#F5F5F5";
+  var sales = new Sprite(128, 128);
+  sales.image = game.assets['assets/sales.png'];
+  sales.x = 60;
+  sales.y = 200;
+  Hire_Scene.addChild(sales);
+  sales.addEventListener("touchstart", function(){
+   for(var i = 0; i < employeesAvailable.length; i++){
+    if(employeesAvailable[i].type == "sales"){
+     branch_object.addEmployee(employeesAvailable[i]);
+     break;
+    }    
+   }
+   //game.removeScene(Hire_Scene);
+   drawSpecificBranchInformation(branch_object);
+  });
+  
+  var tellers = new Sprite(128, 128);
+  tellers.image = game.assets['assets/tellers.png'];
+  tellers.x = 60;
+  tellers.y = 400;
+  Hire_Scene.addChild(tellers);
+  tellers.addEventListener("touchstart", function(){
+   for(var i = 0; i < employeesAvailable.length; i++){
+    if(employeesAvailable[i].type == "teller"){
+     branch_object.addEmployee(employeesAvailable[i]);
+     break;
+    }    
+   }
+    //game.removeScene(Hire_Scene);
+    drawSpecificBranchInformation(branch_object);
+  })
+  
+    var back_icon = new Sprite(128, 128);
+    back_icon.x = 10;
+    back_icon.y = game_height - 180;
+    back_icon.image = game.assets['assets/back.png'];
+    Hire_Scene.addChild(back_icon);
+    
+    var back_label = new Label("Back");
+    back_label.x = 30;
+    back_label.y = game_height - 60;
+    back_label.font = "30px myFirstFont";
+    Hire_Scene.addChild(back_label);
+    
+    var goBack = function(){
+      game.removeScene(Hire_Scene); // go back to branches_scene;
+      drawSpecificBranchInformation(branch_object, 0);
+    }
+    back_icon.addEventListener("touchstart", goBack);
+    back_label.addEventListener("touchstart", goBack);
+    
+    game.pushScene(Hire_Scene);
+  
+  
+ }
  /*
   *    home menu scene
   *    Money
@@ -193,21 +254,27 @@
          game.pushScene(Home_Menu_Scene); // add to game
 }
 
-drawEmployee = function(employee_object, x, y){
-    var level = new Label("Level: 1" /*+ (employee_object.branchLevel + 1)*/);
+drawEmployee = function(branch_object, employee_object, x, y){
+    var level = new Label("Level: " + employee_object.stars);
     level.x = 60;
     level.y = y + 60;
     level.font = "30px myFirstFont";
     Branch_Information_Scene.addChild(level);
     
-    var salary = new Label("Salary: 100");
+    var salary = new Label("Salary: " + parseInt(employee_object.salary));
     salary.x = 60;
     salary.y = y + 100;
     salary.font = "30px myFirstFont";
     Branch_Information_Scene.addChild(salary);
     
     var employee_picture = new Sprite(128, 128);
-    employee_picture.image = game.assets['assets/sales.png'];
+    if(employee_object.type == "sales"){
+       employee_picture.image = game.assets['assets/sales.png'];
+    }
+    else if (employee_object.type == "teller"){
+     employee_picture.image = game.assets['assets/tellers.png']
+    }
+   
     employee_picture.x = 250;
     employee_picture.y = y + 50;
     Branch_Information_Scene.addChild(employee_picture);
@@ -219,19 +286,29 @@ drawEmployee = function(employee_object, x, y){
     fire_button.y = y + 40;
     Branch_Information_Scene.addChild(fire_button);
     
+    fire_button.addEventListener("touchstart", function(){ // fire
+     branch_object.removeEmployee(employee_object); // remove employee
+     drawSpecificBranchInformation(branch_object); // redraw branch information
+    })
+    
     var train_button = new Sprite(128, 128);
     train_button.scale(0.7, 0.7);
     train_button.image = game.assets['assets/train.png'];
     train_button.x = 500;
     train_button.y = y + 40;
     Branch_Information_Scene.addChild(train_button);
+    
+    train_button.addEventListener("touchstart", function(){ // train
+     employee_object.train();
+    })
 }
  
   /*
   draw information of each branch
   show employee information
   */
- drawSpecificBranchInformation = function(branch_object){
+ drawSpecificBranchInformation = function(branch_object, start_i){
+    if(start_i == null || typeof(start_i) === 'undefined') start_i = 0;
     Branch_Information_Scene = new Scene();
     Branch_Information_Scene.backgroundColor = "#F5F5F5";
       
@@ -272,13 +349,15 @@ drawEmployee = function(employee_object, x, y){
     sell_label.y = game_height - 60;
     sell_label.font = "30px myFirstFont";
     
-    sell_label.addEventListener("touchstart", sellBranch);
-    
     var sellBranch = function(){ // redraw scene after add branch
-      branch_object.clickDelete;
-      game.popScene();
+      branch_object.clickDelete();
+      game.removeScene(Branch_Information_Scene);
       drawBranchesScene()
     }
+    
+    sell_label.addEventListener("touchstart", sellBranch);
+    sell_icon.addEventListener("touchstart", sellBranch);
+    
     
     var employ_icon = new Sprite(128, 128);
     employ_icon.image = game.assets['assets/employ.png'];
@@ -289,6 +368,13 @@ drawEmployee = function(employee_object, x, y){
     employ_label.x = 30 + 128 * 2;
     employ_label.y = game_height - 60;
     employ_label.font = "30px myFirstFont";
+    
+    var clickEmploy = function(){
+     game.removeScene(Branch_Information_Scene);
+     drawHireInterface(branch_object);
+    }
+    employ_icon.addEventListener("touchstart", clickEmploy);
+    employ_label.addEventListener("touchstart", clickEmploy);
     
     /* Branch Information */
     var level = new Label("Level: " + (branch_object.branchLevel + 1));
@@ -325,6 +411,13 @@ drawEmployee = function(employee_object, x, y){
     up_label.x = 420;
     up_label.y = game_height - 60;
     up_label.font = "30px myFirstFont";
+    
+    var click_up_button = function(){
+       game.removeScene(Branches_Scene);
+       drawSpecificBranchInformation(branch_object, (start_i - 1) < 0 ? 0 : (start_i - 1));
+    }
+    up_label.addEventListener("touchstart", click_up_button);
+    up_button.addEventListener("touchstart", click_up_button);
 
     
     var down_button = new Sprite(128, 128);
@@ -337,6 +430,13 @@ drawEmployee = function(employee_object, x, y){
     down_label.x = 530;
     down_label.y = game_height - 60;
     down_label.font = "30px myFirstFont";
+    
+    var click_down_button = function(){
+       game.removeScene(Branches_Scene);
+       drawSpecificBranchInformation(branch_object, (start_i + 1) >= branch_object.employees.length ? start_i : (start_i + 1));
+    }
+    down_button.addEventListener("touchstart", click_down_button);
+    down_label.addEventListener("touchstart", click_down_button);
     
     // draw branch scene
     var branch_picture = new Sprite(128, 128);
@@ -352,6 +452,18 @@ drawEmployee = function(employee_object, x, y){
     branch_picture.x = 400;
     branch_picture.y = 30;
     Branch_Information_Scene.addChild(branch_picture);
+    
+    // upgrade
+    branch_picture.addEventListener("touchstart", function(){
+     branch_object.clickUpgrade();
+     game.removeScene(Branch_Information_Scene);
+     drawSpecificBranchInformation(branch_object);
+    });
+    upgrade_label.addEventListener("touchstart", function(){
+     branch_object.clickUpgrade();
+     game.removeScene(Branch_Information_Scene);
+     drawSpecificBranchInformation(branch_object);
+    })
     
     
     Branch_Information_Scene.addChild(back_icon);
@@ -374,9 +486,14 @@ drawEmployee = function(employee_object, x, y){
     
     /*
      *  draw employees
+     *  branch_object.employees
      */
-    drawEmployee(null, 60, 200);
-    
+    /* draw 4 employees */
+    for (var i = start_i; i < start_i + 4; i++) {
+        if(i == branch_object.employees.length) break;
+        if(branch_object.employees[i] === null) continue;
+        drawEmployee(branch_object, branch_object.employees[i], 60, 200 + (i-start_i) *  100);
+    }
     game.pushScene(Branch_Information_Scene);
  }
  
@@ -411,7 +528,7 @@ drawEmployee = function(employee_object, x, y){
    customers.font = "40px myFirstFont";
    Branches_Scene.addChild((customers));
    
-   var income = new Label("Income: " + (branch_object.income - branch_object.expenditure));
+   var income = new Label("Profit: " + (branch_object.income - branch_object.expenditure));
    income.x = x;
    income.y = y + 90;
    income.font = "40px myFirstFont";
@@ -482,7 +599,8 @@ drawEmployee = function(employee_object, x, y){
     
     var backInBranchScene = function(){
      game.removeScene(Branches_Scene); // remove current scene;
-     game.pushScene(Home_Menu_Scene); // go back to branches scene
+     drawHomeMenuScene();
+     //game.pushScene(Home_Menu_Scene); // go back to branches scene
     }
     
     var buildBranch = function(){ // redraw scene after add branch
@@ -555,18 +673,18 @@ drawEmployee = function(employee_object, x, y){
     Branches_Scene.addChild(down_label);
     game.pushScene(Branches_Scene);
  }
- var drawInvestmentInformation = function(investment_obj, x, y){
+ drawInvestmentInformation = function(investment_obj, x, y){
   /*
    * success%, ROI, amount, time
    */ 
    
-   var success = new Label("Success%: " + investment_obj.risk);
+   var success = new Label("Success%: " + (investment_obj.risk * 100));
    success.x = x;
    success.y = y;
    success.font = "40px myFirstFont";
    Investment_Scene.addChild((success));
    
-   var ROI = new Label("ROI: " + (investment_obj.roi));
+   var ROI = new Label("ROI: " + (investment_obj.roi) + "x");
    ROI.x = x;
    ROI.y = y + 30;
    ROI.font = "40px myFirstFont";

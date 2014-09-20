@@ -10,6 +10,7 @@ function Branch () {
     var MAX_EMPLOYEES = [10, 15, 20];
     var BRANCH_VALUE = [1200, 2500, 5500];
     var SELL_MULTIPLIER = 0.8
+    var MAX_BRANCH_LEVEL = 2;
     
     var SALES_EMPLOYEE_DIVISOR = 100;
     var TELLER_EMPLOYEE_DIVISOR = 100;
@@ -40,7 +41,9 @@ function Branch () {
     this.income = 0;
     
     //expenditure of this branch
-    this.expenditure;
+    this.expenditure = 0;
+    
+    this.branchValue = BRANCH_VALUE[this.branchLevel];
     
     
     function getStarPower (type) {
@@ -139,5 +142,17 @@ function Branch () {
         Player.money += Math.round(SELL_MULTIPLIER * BRANCH_VALUE[this.branchLevel]);
         
         branchList.splice(indexToDelete, 1);
+    };
+    
+    this.clickUpgrade = function() {
+        if (this.branchLevel >= MAX_BRANCH_LEVEL) {
+            alert("Branch is already at max level.");
+        }
+        else {
+            var cost = (BRANCH_VALUE[this.branchLevel + 1] - BRANCH_VALUE[this.branchLevel]) * 1.5;
+            Player.money -= cost;
+            
+            this.branchLevel++;
+        }
     };
 }

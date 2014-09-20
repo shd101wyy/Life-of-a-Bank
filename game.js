@@ -58,7 +58,11 @@ function addBranch() {
     var newBranch = new Branch();
     branchList[branchList.length] = newBranch;
     Player.branches++;
-    Player.money -= newBranch.BRANCH_VALUE[newBranch.branchLevel];
+    Player.money -= newBranch.branchValue;
+}
+
+function employeeHiringTemp () {
+    var hire = prompt("Employee ")
 }
 
 /**
