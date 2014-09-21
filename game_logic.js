@@ -678,7 +678,7 @@ drawEmployee = function(branch_object, employee_object, x, y){
    * success%, ROI, amount, time
    */ 
    
-   var success = new Label("Success%: " + (investment_obj.risk * 100));
+   var success = new Label("Success%: " + Math.round(investment_obj.risk * 100));
    success.x = x;
    success.y = y;
    success.font = "40px myFirstFont";
