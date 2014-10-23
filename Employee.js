@@ -4,7 +4,7 @@ function Employee (type, progress) {
     var salaryDefinition = [100, 200, 350, 650, 1300];
     var SALARY_VARIANCE = 0.2;
     var TRAINING_COST = [0, 300, 600, 1300, 3000];
-    var TRAINING_SUCCESS_RATE = 0.88;
+    var TRAINING_SUCCESS_RATE = 0.90;
     
     this.type = "";
     
@@ -35,19 +35,21 @@ function Employee (type, progress) {
     };
     
     //called when the employee undergoes training. returns true if training is successful, false otherwise
-    this.train = function () {
-        Player.money -= TRAINING_COST[this.stars];
-        
-        if (Math.random() < TRAINING_SUCCESS_RATE) {
-            //successful
-            this.stars++;
-            variance = SALARY_VARIANCE - Math.random() * SALARY_VARIANCE * 2;
-            this.salary = salaryDefinition[this.stars] + variance * salaryDefinition[this.stars];
-            alert("Successful training!");
-        }
-        else {
-            //unsuccessful
-            alert("Training unsuccessful :(");
+    this.train = function() {
+        if (confirm("Are you sure you want to train this employee?")) {
+            Player.money -= TRAINING_COST[this.stars];
+
+            if (Math.random() < TRAINING_SUCCESS_RATE) {
+                //successful
+                this.stars++;
+                variance = SALARY_VARIANCE - Math.random() * SALARY_VARIANCE * 2;
+                this.salary = salaryDefinition[this.stars] + variance * salaryDefinition[this.stars];
+                alert("Successful training!");
+            }
+            else {
+                //unsuccessful
+                alert("Training unsuccessful :(");
+            }
         }
     };
 }

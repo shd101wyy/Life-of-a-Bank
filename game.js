@@ -1,4 +1,4 @@
-var MONTHS_OF_BANKRUPTCY_ALLOWED = 6;
+var MONTHS_OF_BANKRUPTCY_ALLOWED = 12;
 
 /**
  * Constants for fame calculation
@@ -15,7 +15,7 @@ var PROGRESS_FAME_MULTIPLIER = 10;
 var PROGRESS_BRANCH_MULTIPLIER = 10;
 var PROGRESS_EMPLOYEE_MULTIPLIER = 1;
 
-//console.log(Player.money);
+
 
 /*
  *   hire employees
@@ -231,11 +231,11 @@ function nextMonth() {
     /**
      * Update Player.money based on income and expenditure
      */
-    console.log(Player.money);
+
     Player.money += calculateIncome();
-    console.log(Player.money);
+
     Player.money -= calculateExpenditure();
-    console.log(Player.money);
+
     
     /**
      * Delete completed investments, reset advertisingPower
@@ -253,7 +253,7 @@ function nextMonth() {
     /**
      * Check if Player.money is negative
      */
-    var losingCondition = -5000;
+    var losingCondition = -6000;
     
     if (Player.money < losingCondition) {
         alert(Player.bankName + " is now bankrupt! D:\n The game will now reload.");
@@ -267,7 +267,7 @@ function nextMonth() {
             location.reload();
         }
         else {
-            alert((MONTHS_OF_BANKRUPTCY_ALLOWED - Player.negativeMonths) + " months till bankruptcy! ):");
+            alert((MONTHS_OF_BANKRUPTCY_ALLOWED - Player.negativeMonths + 1) + " months till bankruptcy! ):");
         }
     }
     else {

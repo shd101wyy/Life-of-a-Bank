@@ -2,11 +2,11 @@ function Branch () {
     
     var AVERAGE_CUSTOMERS = [100, 200, 300];
     var CUSTOMERS_VARIANCE = 0.3;
-    var GROWTH_RATE_DIVISOR = 10;
-    var INCOME_MULTIPLIER = [500, 1000, 1500];
-    var INCOME_VARIANCE = 0.1;
-    var EXPENDITURE_MULTIPLIER = [500, 1000, 1500];
-    var EXPENDITURE_VARIANCE = 0.1;
+    var GROWTH_RATE_MULTIPLIER = 3;
+    var INCOME_MULTIPLIER = [250, 350, 500];
+    var INCOME_VARIANCE = 0.02;
+    var EXPENDITURE_MULTIPLIER = [245, 345, 495];
+    var EXPENDITURE_VARIANCE = 0.01;
     var MAX_EMPLOYEES = [10, 15, 20];
     var BRANCH_VALUE = [1200, 2500, 5500];
     var SELL_MULTIPLIER = 0.8
@@ -17,19 +17,19 @@ function Branch () {
     
     //Bank level related
     this.branchLevel = 0;
-    var branchRunCost = [200, 500, 1250];
+    var branchRunCost = [100, 200, 400];
     
     
     var variance = CUSTOMERS_VARIANCE - Math.random() * CUSTOMERS_VARIANCE * 2;
     
     //maximum number of customers this branch can have
     this.maxCustomers = Math.round(AVERAGE_CUSTOMERS[this.branchLevel] + variance * AVERAGE_CUSTOMERS[this.branchLevel]);
-    console.log(this.maxCustomers);
+
     //current number of customers
     this.currentCustomers = Math.round(0.05 * this.maxCustomers);
-    console.log(this.currentCustomers);
+
     //growth rate of currentCustomers. A number > 1
-    this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) / GROWTH_RATE_DIVISOR);
+    this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) * GROWTH_RATE_MULTIPLIER);
     
     //array of all the employees in this branch
     this.employees = [];
@@ -75,11 +75,15 @@ function Branch () {
     };
     
     this.updateBranch = function (advertisingMultiplier) {
+        if(this.currentCustomers >= this.maxCustomers)
+            return;
         
-        var employeeMultiplier = getStarPower("sales") / SALES_EMPLOYEE_DIVISOR + 1;
+        var employeeMultiplier = (getStarPower("sales") / SALES_EMPLOYEE_DIVISOR) + 1;
         
         this.currentCustomers += Math.round(this.growthRate * advertisingMultiplier * employeeMultiplier);
-        this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) / GROWTH_RATE_DIVISOR);
+        if(this.currentCustomers> this.maxCustomers)
+            this.currentCustomers = this.maxCustomers;
+        this.growthRate = 1 + ((1 - this.currentCustomers / this.maxCustomers) * GROWTH_RATE_MULTIPLIER);
     };
     
     this.addEmployee = function (employeeToAdd) {
@@ -112,9 +116,9 @@ function Branch () {
         var variance = INCOME_VARIANCE - Math.random() * INCOME_VARIANCE * 2;
         var incomeMultiplier = INCOME_MULTIPLIER[this.branchLevel] + variance * INCOME_MULTIPLIER[this.branchLevel];
         
-        var employeeMultiplier = getStarPower("teller") / TELLER_EMPLOYEE_DIVISOR + 1;
+        var employeeMultiplier = (getStarPower("teller") / TELLER_EMPLOYEE_DIVISOR) + 1;
         
-        this.income = Math.round(this.currentCustomers * incomeMultiplier * employeeMultiplier);
+        this.income = Math.round(this.currentCustomers * incomeMultiplier * (employeeMultiplier * this.employeeCount / (this.employeeCount + 1)));
         
         return this.income;
     };
@@ -123,13 +127,26 @@ function Branch () {
         var variance = EXPENDITURE_VARIANCE - Math.random() * EXPENDITURE_VARIANCE * 2;
         var expenditureMultiplier = EXPENDITURE_MULTIPLIER[this.branchLevel] + variance * EXPENDITURE_MULTIPLIER[this.branchLevel];
         
-        this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier + getEmployeeSalary() + branchRunCost[this.branchLevel]);
+        this.expenditure = Math.round(this.currentCustomers * expenditureMultiplier * (this.employeeCount / (this.employeeCount + 1)) + getEmployeeSalary() + branchRunCost[this.branchLevel]);
         
-        return this.expenditure
+        return this.expenditure;
     };
     
-    this.clickDelete = function () {
+    this.clickHire = function(employeeToHire) {
         
+        this.addEmployee(employeeToHire);
+        
+        var indexToDelete;
+        for (var i = 0; i < employeesAvailable.length; i++) {
+            if (this === employeesAvailable[i]) {
+                indexToDelete = i;
+            }
+        }
+        
+        employeesAvailable.splice(indexToDelete, 1);
+    }
+    
+    this.clickDelete = function () {
         
         var indexToDelete;
     

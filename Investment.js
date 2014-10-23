@@ -5,7 +5,7 @@ function Investment (progress){
     //TODO high risk vs low risk
     
     var AMOUNT_MULTIPLIER = 100;
-    var LENGTH_MULTIPLIER = 4;
+    var LENGTH_MULTIPLIER = 3;
     var AMOUNT_VARIANCE = 0.3
     
     //a number between 0.5 and 1. the chance of success of the investment
@@ -30,11 +30,11 @@ function Investment (progress){
             //check if investment was successful
             var success = Math.random() + this.risk;
             if (success > 1) {
-                return this.amount * this.roi;
+                return Math.round(this.amount * this.roi);
             }
             else {
                 //investment failed
-                return this.amount - (this.roi - 0.8) * this.amount;
+                return Math.round(this.amount - (this.roi - 0.8) * this.amount);
             }
         }
         else {

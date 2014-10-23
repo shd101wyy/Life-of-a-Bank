@@ -30,6 +30,7 @@ function Advertisement (progress) {
     this.clickBuy = function() {
         advertisingPower += this.advertisingPower;
         Player.money -= this.cost;
+        Player.fameAdvertisingExp += 3;
         
         var indexToDelete;
         for (var i = 0; i < advertisementsAvailable.length; i++) {
